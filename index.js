@@ -60,18 +60,4 @@ function createQueryLogger(origQuery) {
 Pool.prototype.query = createQueryLogger(pQuery);
 Connection.prototype.query = createQueryLogger(cQuery);
 
-module.exports = {
-  logger: mysqlLogger,
-  createKoaMiddleware(filename) {
-    return function* (next) {
-      yield next;
-      mysqlLogger.writeFile(filename, this.request);
-    };
-  },
-  createKoa2Middleware(filename) {
-    return async (ctx, next) => {
-      mysqlLogger.writeFile(filename, ctx);
-      await next();
-    };
-  },
-};
+module.exports = mysqlLogger;
