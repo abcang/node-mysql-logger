@@ -13,10 +13,11 @@ $ npm i -S abcang/node-mysql-logger
 ### 使い方
 
 ```js
-import { createKoa2Middleware } from 'node-mysql-logger';
-// koa 1系は createKoaMiddleware を使用
+import mysqlLogger from 'node-mysql-logger/lib/koa1middleware';
+// import mysqlLogger from 'node-mysql-logger/lib/koa2middleware';
+// koa 2系は koa2middleware を使用
 
-app.use(createKoa2Middleware('/tmp/sql.log'));
+app.use(mysqlLogger('/tmp/sql.log')); // 出力先のファイル名を指定して実行
 ```
 
 ### 出力されるデータ
