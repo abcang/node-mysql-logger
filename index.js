@@ -31,7 +31,7 @@ class MysqlLogger {
     if (req) {
       data.push(`REQUEST\t${req.method}\t${req.url}\t${this.logs.length}`);
     }
-    data.push(...this.logs.map(format));
+    data.push(...this.logs.map(format), '');
 
     fs.appendFile(filename, data.join('\n'), 'utf8', (err) => {
       console.log(err);
