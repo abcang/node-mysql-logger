@@ -6,7 +6,7 @@ function format(log) {
   const { sql, values, stack, time } = log;
   return [
     'SQL',
-    `(${time}ms)`,
+    `${time}ms`,
     sql.replace(/[\r\n]/, ' ').replace(/ +/, ' ').trim(),
     `[${values.join(', ')}]`,
     stack.split('\n').filter((line) => !line.match(/\/node_modules\/|\(native\)/) && line.includes('(')).map((line) => line.match(/\s+at (.+)/)[1]).join(' <- ')
@@ -60,4 +60,18 @@ function createQueryLogger(origQuery) {
 Pool.prototype.query = createQueryLogger(pQuery);
 Connection.prototype.query = createQueryLogger(cQuery);
 
-module.exports = mysqlLogger;
+module.exports = {
+  logger: mysqlLogger,
+  createKoaMiddleware(filename) {
+    return function* (next) {
+      yield next;
+      mysqlLogger.writeFile(filename, this.request);
+    };
+  },
+  createKoa2Middleware(filename) {
+    return async (ctx, next) => {
+      mysqlLogger.writeFile(filename, ctx);
+      await next();
+    };
+  },
+};
